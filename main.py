@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException, Path, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import List, Annotated
+from fastapi.templating import Jinja2Templates
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
 users = []
 
 class User(BaseModel):
@@ -14,9 +14,9 @@ class User(BaseModel):
     username: str
     age: int
 
-@app.get("/", response_class=HTMLResponse)
-async def read_users(request: Request):
-    return templates.TemplateResponse("users.html", {"request": request, "users": users})
+@app.get("/")
+def read_root(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("users.html", {"request":request,"users": users})
 
 @app.get("/users/{user_id}", response_class=HTMLResponse)
 async def read_user(request: Request, user_id: int):
