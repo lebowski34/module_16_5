@@ -15,18 +15,18 @@ class User(BaseModel):
     age: int
 
 @app.get("/")
-def read_root(request: Request) -> HTMLResponse:
+def get_main_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("users.html", {"request":request,"users": users})
 
 @app.get("/users/{user_id}", response_class=HTMLResponse)
-async def read_user(request: Request, user_id: int):
+async def get_user(request: Request, user_id: int):
     user = next((u for u in users if u.id == user_id), None)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return templates.TemplateResponse("users.html", {"request": request, "user": user})
 
 @app.post("/user/{username}/{age}", response_model=User)
-def create_user(
+def post_user(
     username: Annotated[str, Path(title="Enter username", min_length=5, max_length=20, example="UrbanUser")],
     age: Annotated[int, Path(title="Enter age", ge=18, le=120, example=24)]
 ):
